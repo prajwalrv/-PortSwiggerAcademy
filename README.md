@@ -15,7 +15,7 @@ Instead of relying solely on manual proxy intervention (Burp Suite GUI), this fr
 ## 🛠️ Engineered Tech Stack
 
 *   **Automation Engine:** Python 3.x (`requests`, `BeautifulSoup4`, `asyncio` for multi-threaded testing)
-*   **Target Core Knowledge:** Deep alignment with secure engineering patterns across **.NET Core, Java (Spring Boot), and Angular frontends**.
+*   **Target Core Knowledge:** Deep alignment with secure engineering patterns across **C# .NET Core, and Angular frontends**.
 *   **Vulnerability Domains Covered:** 100% of the OWASP Top 10 including advanced exploitation of business logic flaws, request smuggling, asynchronous SSRF, and JWT bypasses.
 
 ---
@@ -24,26 +24,9 @@ Instead of relying solely on manual proxy intervention (Burp Suite GUI), this fr
 
 The repository is modularly structured by vulnerability domain. Each directory contains the exploit payload logic, a automated exploit script, and documentation on the code-level remediation.
 
-```text
-├── 01-SQL-Injection/
-├── 02-Cross-Site-Scripting-XSS/
-├── 03-CSRF/
-├── 04-Clickjacking/
-├── 05-DOM-Based-Vulnerabilities/
-├── 06-Cross-Site-WebSocket-Hijacking/
-├── 07-SSRF/                   # Includes Cloud Instance Metadata Service (IMDS) bypasses
-├── 08-OS-Command-Injection/   # Safe validation scripting via time delays & blind exfiltration
-├── 09-Server-Side-Template-Injection/
-├── 10-Directory-Traversal/    # Automation of path canonicalization bypasses
-├── 11-Access-Control/         # IDOR and horizontal/vertical privilege escalation logic
-├── 12-Authentication/
-├── 13-Web-Sockets/
-├── 14-Web-Cache-Poisoning/
-├── 15-HTTP-Request-Smuggling/
-├── 16-OAuth-Authentication/
-└── 17-JWT-Vulnerabilities/
+PortSwiggerAcademy
+├── 1-Directory-Traversal/    # Automation of path canonicalization bypasses
 ```
-
 ---
 
 ## 💡 Engineering Highlights & Design Patterns
@@ -66,13 +49,10 @@ Ensure you have your academy laboratory active, target URL configured, and your 
 ```bash
 # Clone the automation framework
 git clone https://github.com
-cd YOUR_REPO_NAME
-
-# Install dependencies
-pip install -r requirements.txt
+cd PortSwiggerAcademy
 
 # Run an automated exploit validation script
-python 10-Directory-Traversal/exploit_traversal.py --target "https://web-security-academy.net"
+python3 directory-traversal-lab-01.py "https://web-security-academy.net"
 ```
 
 ---

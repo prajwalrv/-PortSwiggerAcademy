@@ -1,4 +1,4 @@
-# Automated Web Security Penetration Testing Framework (PortSwigger Academy)
+# Automated Web Application Penetration Testing Framework (PortSwigger Academy)
 
 [![Tech Stack](https://shields.io)](https://python.org)
 [![Target Stack](https://shields.io)](https://microsoft.com)

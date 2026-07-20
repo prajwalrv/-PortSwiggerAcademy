@@ -26,7 +26,10 @@ The repository is modularly structured by vulnerability domain. Each directory c
 
 PortSwiggerAcademy
 ├── 1-Directory-Traversal/    # Automation of path canonicalization bypasses
+├── 2-Access-Control/         # Broken access control labs, privilege escalation, and IDOR scenarios
 ```
+Each lab folder contains the exploit script, notes, and remediation guidance to help understand both the vulnerability and the fix.
+
 ---
 
 ## 💡 Engineering Highlights & Design Patterns

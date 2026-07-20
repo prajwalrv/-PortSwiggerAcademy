@@ -24,6 +24,7 @@ Instead of relying solely on manual proxy intervention (Burp Suite GUI), this fr
 
 The repository is modularly structured by vulnerability domain. Each directory contains the exploit payload logic, a automated exploit script, and documentation on the code-level remediation.
 
+```text
 PortSwiggerAcademy
 ├── 1-Directory-Traversal/    # Automation of path canonicalization bypasses
 ├── 2-Access-Control/         # Broken access control labs, privilege escalation, and IDOR scenarios

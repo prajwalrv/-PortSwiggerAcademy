@@ -35,7 +35,7 @@ def main():
         sys.exit(-1)
 
     url = sys.argv[1]
-    print("(+) Starting the Exploit : Broken Acces Control - Unprotected admin functionality \n")
+    print("(+) Starting the Exploit : Broken Acces Control - Unprotected admin functionality - \n Type : Predictable location \n")
     broken_access_control_exploit(url)
 
 

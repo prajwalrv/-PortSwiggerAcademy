@@ -3,7 +3,7 @@ Lab#5 - FIle path traversal, validation of start of path
 Concept : Path traversal is a vulnerability when an application uses user-controlled input to construct
           file system paths without proper validation.
 
-          - Even developed added all Filters & the url starts with absolute imapge path : 
+          - Even developer added all Filters & the url starts with absolute imapge path : 
             'image?filename-/var/www/images/cat.jpg' An attacker can manipulate using absolute path 
             traversal sequences such as '/var/www/images/../../../etc/passwd' to acces files outside 
             the intended directory.

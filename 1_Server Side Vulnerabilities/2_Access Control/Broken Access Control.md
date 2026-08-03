@@ -1,73 +1,67 @@
-===================================================================== BROKEN ACCESS CONTROL
-AGENDA : 
-	--> What is Access Control Vulerabilities.
-	--> How do you find these vulnerabilities.
-	--> How do you exploit it.
-	
-==> What is Broken Access Control Vulerabilities :
-CONCEPT : This vulnerbility arises when users can act outside their intended permissions. This typically leads to :
-		-> Sensitive information disclosure, 
-		-> Unauthorized access, modification or destruction of data.
-	
-	-> Access Contro : it determines whether the user is allowed to carry out the action that they are attempting to perform.
+Broken access control occurs when a web application fails to properly enforce user restrictions, allowing unauthorized users to access data or perform actions outside of their intended permissions. Ranked highly on the [OWASP Top 10](https://owasp.org/Top10/2025/A01_2025-Broken_Access_Control/) list, it bypasses the system's authorization layer, leading to data exposure, account takeovers, or complete system compromise. [1, 2, 3] 
+## Primary Forms of Privilege Escalation
+Broken access control typically manifests as one of three core permission bypasses: [3, 4] 
 
-		ex : user alice wants to perform banking transaction, ehrn you perform that banking transaction the session token 
-		     gets passed to the application & the app backend checks which user id is this session token aassigned to once
-		     the user id idententifiess it checks access control rules in the database that have been applied to specif 
-		     user id, if the user has the access transaction completes, if not transaction will be failed.
-		     
-	-> Types of Access Control :
-		
-		1. Vertical Access Control : it is a security rule that ensures users can only access features appropriate for their
-		                             specific job role or rank.
-						
-			Example : Think of it like a building with different floor levels:
-				-> Regular users are only allowed on the ground floor to do basic tasks. 
-				-> Administrators have a key to the upper floors to manage the building.
+* 
+* Horizontal Privilege Escalation: A user accesses data or resources belonging to another user who shares the exact same privilege level (e.g., User A viewing User B's private invoice). [2, 3] 
+* Vertical Privilege Escalation: A lower-privileged user gains access to functions or data reserved for higher-privileged accounts (e.g., a standard customer accessing an administrator panel to delete accounts). [3, 5] 
+* Context-Dependent Privilege Escalation: A user exploits the state or workflow sequence of an application to perform unauthorized actions (e.g., skipping a payment page in a checkout workflow but successfully landing on the order-confirmation fulfillment page). [3, 4] 
+* 
 
-		2. Horizontal Access Control : it enables different users to access similar resources types.
-			
-			Example : Bob and Adam both have same privilege in the application which is that they
-				  are regular users. now Bob should be able to access his data & should not be
-				  able to access Adam's data & vice-versa.
-				  
-		3. Context-dependent Access Control : it restricts access to functionality & resources based on
-				  the state of the application or the user's interaction with it to prevent 
-				  users performing actions in wrong order.
-				  
-			Example : In a multistep process for deleting users, the first step is to click on the 
-				  delete button, when yo do that its pops and asks yo for the confirmation to
-				  delete that user, if you click yes --> this initiates another request to del
-				  that specific user & deletes the user.
-				  
-	-> Types of Brokrn Access Control Vulnerability :
-	
-		1. Horizontal privilege escalation : it occurs when an attacker gains access to resources belonging
-				  to another user of the same privilege level.
-				  
-			Example : https://vulnerablle-website.com/idor/myccountuser?id=123 -> Bob[Attacker]
-				  ----> https://vulnerablle-website.com/idor/myccountuser?id=124  -> Alice 
-				  [now actually Bob is having Alice's account & its's data access]
-				  
-		2. Verticle privilege escalation : it occurs when an attacker gain access to resources belonging to
-				  another user of the higher hireacrchy level with higher privilege level.
-				  
-			Exaample : https://vulnerablle-website.com/idor/myccountuser?regularuser=true -> [Bob] -> regular user
-				   ----> https://vulnerablle-website.com/idor/myccountuser?admn=true  -> Admin 
-				   [now actually Bob is having Admin account & its's root permission access]
-				   
-		3. Vulnerability in Multi-Step Process : it occurs when access control rules are implemented on some of the steps
-				   
-			Example : Orderly chained requests ---> /confirm  ->   /delete   ->  deleted user
-				   [bypass] step 1 /confirm - [because this endpint is implemented with strict access controls.]
-				   ---> hop on /delete --> deleted user ['/delete' endpoint is vulnerable now]
-				   [Because developer though that all user will for the ordered chain so he kept acess control 
-				    settings only to '/confirm' not '/delete' wich become vulnerable]
-				    
-	-> Common Access Control Vulnerability Exploit Way : [VVIP]
-	
-		1. Bypassing access control checks by modifying parameters in the URL or HTML page.
-		2. Accessing the API with missing access controls on the POST, PUT, & DELETE requests.
-		3. Manipulating metadate, such as replying or taampering with JSON web tokens [JWT] or a cookie.
-		4. Exploiting CORS misconfiguation that allow API access from unauthorized / untrusted origins.
-		5. Force browsing to authenticated pages as an unauthenticated user.
+------------------------------
+## Common Types of Broken Access Control Vulnerabilities
+The most frequent security patterns and implementation flaws that lead to broken access control include: [2, 6] 
+## 1. Insecure Direct Object References (IDOR) [6] 
+IDOR happens when an application exposes a direct identifier to an internal database object in a user-controlled parameter (like a URL or API request) without verifying if the requesting user owns that resource. [6, 7] 
+
+* 
+* Example: Changing the URL from ://example.com to ...id=1002 displays another user’s account information. [3] 
+* 
+
+## 2. Missing Function-Level Access Control (Unprotected Endpoints)
+This flaw occurs when developers restrict access to specific features purely on the user interface (UI)—such as hiding an "Admin Panel" button from regular users—but fail to enforce permission checks on the server-side API or endpoint. [2, 5] 
+
+* 
+* Example: A standard user can forcefully browse directly to ://example.com to execute administrative actions because the server only validates whether the user is logged in, not who they are. [1, 5] 
+* 
+
+## 3. Parameter and Metadata Tampering
+Applications sometimes rely on client-side state variables, cookies, or hidden form fields to determine user access privileges. Attackers can intercept and modify this data before it reaches the backend server. [1, 2, 6] 
+
+* 
+* Example: Modifying a hidden HTML form field or cookie from isAdmin=false to isAdmin=true to instantly grant yourself administrative privileges. [1, 4] 
+* 
+
+## 4. CORS Misconfigurations [2] 
+Cross-Origin Resource Sharing (CORS) configurations dictate which external domains can interact with an application's internal API. If configured poorly, it can expose private application resources to unauthorized external entities. [1, 8] 
+
+* 
+* Example: Setting the backend header Access-Control-Allow-Origin: * allows malicious third-party websites to extract sensitive session data from an authenticated user's browser. [1, 9] 
+* 
+
+## 5. JWT and Session Metadata Manipulation [3, 10] 
+When applications use JSON Web Tokens (JWT) or cookies to track user permissions, a failure to properly validate signatures or verify token expiration allows attackers to replay, alter, or forge identity states. [1, 2] 
+
+* 
+* Example: Modifying the payload of a weakly signed JWT to change the username or user role field, gaining access to a target account. [1] 
+* 
+
+------------------------------
+## Summary Comparison of Vulnerability Types
+
+| Vulnerability Type | Primary Target | Typical Exploitation Method | Impact |
+|---|---|---|---|
+| IDOR | Peer user data | Tweaking resource IDs in URLs/APIs | Data leaks, privacy breaches |
+| Missing Function Control | High-privilege functions | Forceful browsing to hidden paths | Administrative takeover |
+| Parameter Tampering | Role flags and variables | Modifying cookies, headers, or forms | Instant privilege escalation |
+| Workflow Bypass | Multi-step logic sequences | Replaying or skipping sequence steps | Financial fraud, free checkout |
+
+------------------------------
+## Core Mitigation Strategies
+To secure applications against access control flaws, engineering teams should follow these basic principles: [1, 2] 
+
+   1. Deny by Default: Block all application access endpoints automatically unless explicitly configured otherwise.
+   2. Server-Side Verification: Never rely on client-side restrictions or hidden UI components to secure resources.
+   3. Enforce Object Ownership: Every time a user requests an object, the server must check if that specific user session possesses legitimate ownership of that resource ID. [1, 2, 6, 11] 
+
+If you are currently auditing an application or writing security policies, let me know. I can provide code remediation templates or testing checklists tailored to your architecture.

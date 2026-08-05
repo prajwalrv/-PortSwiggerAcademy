@@ -1,4 +1,3 @@
----
 ## Lab#1 Basic SSRF against the local server
 ```text
  This lab has a stock check feature which fetches data from an internal system.
@@ -17,4 +16,3 @@ Solution
     http://localhost/admin/delete?username=carlos
     5. Submit this URL in the stockApi parameter, to deliver the SSRF attack.
 ```
----

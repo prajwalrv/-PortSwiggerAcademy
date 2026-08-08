@@ -1,7 +1,7 @@
 ================================================================================
           THE "PROXY MESSAGE" GAME: BLIND SSRF + SHELLSHOCK
 ================================================================================
-
+```text
  STEP 1: Handing the sealed letter to the middleman (Blind SSRF)
  ┌──────────────┐     1. "Take this letter to the     ┌───────────────────────┐
  │   Attacker   │         internal classroom"         │  Vulnerable Server    │
@@ -32,7 +32,7 @@
  │     Your OOB Trap     │ ─── 5. "I see the message!" ───► [ You see it ]
  │   (Across the Street) │        Log shows: "Incoming ping from 'Admin'!"
  └───────────────────────┘
-
+```
 
 ## Example flow :
 

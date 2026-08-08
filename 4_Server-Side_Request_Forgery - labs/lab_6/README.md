@@ -1,7 +1,7 @@
 ================================================================================
           THE "HIDE AND SEEK" GAME: WHY BLIND SSRF IS HIDDEN
 ================================================================================
-
+```text
  NORMAL REQUEST (The Server Speaks To You)
  ┌──────────────┐     1. "Give me secret_file.txt"   ┌───────────────┐
  │   Attacker   │ ─────────────────────────────────► │ Target Server │
@@ -51,8 +51,9 @@
 
  The target server still gives your browser the same unhelpful error message.
  But it loses the game because your OOB Trap caught it moving in the background.
-
+```
 ## Example flow : 
+```text
 ================================================================================
           THE ACTUAL NETWORK FLOW: STANDARD OOB SSRF (INTERNAL TARGET)
 ================================================================================
@@ -83,3 +84,4 @@
     │
     │ 5. Logs the direct connection coming from the Internal Service's IP!
     │    You check your dashboard and see the hit.
+```

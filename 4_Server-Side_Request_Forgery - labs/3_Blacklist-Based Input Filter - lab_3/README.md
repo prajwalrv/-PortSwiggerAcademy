@@ -350,3 +350,36 @@ a              %61               %2561
 
 ================================================================================
 ```
+## Example flow :
+
+```text
+================================================================================
+             THE FLOW: SSRF WITH BLACKLIST-BASED INPUT FILTER
+================================================================================
+
+ [ YOU ]
+    │
+    │ 1. You want to hit the secret internal IP: "127.0.0.1" (Banned!)
+    │    So you disguise it as an alternate decimal format: "2130706433"
+    │    Payload: "Go fetch http://2130706433"
+    ▼
+ [ SECURITY GUARD / FILTER ]
+    │
+    │ 2. Scans your text for forbidden words:
+    │    Checks for "127.0.0.1"... Not found.
+    │    Checks for "localhost"... Not found.
+    │    Decision: "Looks clean to me! Let it pass."
+    ▼
+ [ PUBLIC WEB APP ]
+    │
+    │ 3. Receives the allowed request. The operating system resolves 
+    │    the decimal "2130706433" right back into the internal IP "127.0.0.1".
+    │
+    │ 4. The Web App blindly executes the network request inside 
+    │    the private network.
+    ▼
+ [ INTERNAL SERVICE (or Localhost) ]
+    │
+    │ 5. Receives the connection request forwarded by the Web App.
+    │    The blacklist filter was successfully bypassed!
+```

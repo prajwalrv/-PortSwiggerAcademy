@@ -311,3 +311,42 @@ Character      Encoded Once      Encoded Twice
 
 ================================================================================
 ```
+
+## Example flow :
+
+```text
+================================================================================
+             THE FLOW: SSRF WITH WHITELIST-BASED INPUT FILTER
+================================================================================
+
+ [ YOU ]
+    │
+    │ 1. You want to hit the secret internal machine, but the filter requires
+    │    the string "://welcometoshop.com" to be present.
+    │    So you use a URL parsing trick with the '@' symbol.
+    │    Payload: "http://internal-machine.local@://welcometoshop.com"
+    │             (In URL logic, everything before '@' is credentials, 
+    │              and the machine actually visits what comes AFTER '@')
+    ▼
+ [ SECURITY GUARD / WHITELIST FILTER ]
+    │
+    │ 2. Scans your text to see if the approved domain is present:
+    │    Does it contain "://welcometoshop.com"? -> YES.
+    │    Decision: "It's on the VIP list. Let it pass!"
+    ▼
+ [ PUBLIC WEB APP (URL Parser Parser Glitch) ]
+    │
+    │ 3. The Web App's network library reads the URL differently than the guard.
+    │    It reads: http://[username]@[actual_destination]
+    │    Wait! Let's swap the positioning:
+    │    Payload: "http://://welcometoshop.com@internal-machine.local"
+    │    The parser thinks "://welcometoshop.com" is just a username,
+    │    and it extracts "internal-machine.local" as the real destination!
+    │
+    │ 4. The Web App blindly connects to the parsed destination.
+    ▼
+ [ INTERNAL SERVICE ]
+    │
+    │ 5. Receives the connection request forwarded by the Web App.
+    │    The strict whitelist filter was successfully bypassed!
+```

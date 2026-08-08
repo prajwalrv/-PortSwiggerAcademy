@@ -56,7 +56,7 @@
 ================================================================================
           THE ACTUAL NETWORK FLOW: STANDARD OOB SSRF (INTERNAL TARGET)
 ================================================================================
-```text
+
  [ YOU ]
     │
     │ 1. Sends a request to the Public Web App.
@@ -83,4 +83,3 @@
     │
     │ 5. Logs the direct connection coming from the Internal Service's IP!
     │    You check your dashboard and see the hit.
-```text

